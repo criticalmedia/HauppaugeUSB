@@ -38,8 +38,8 @@ struct Parameters
     int    bFrames;
     float  aspectRatio;
     std::string serial;
+    std::string avoutput;
     std::string output;
-    bool   mythtv;
 
     _HAPI_VIDEO_CAPTURE_SOURCE videoInput;
     _HAPI_AUDIO_CAPTURE_SOURCE audioInput;

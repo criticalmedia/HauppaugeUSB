@@ -21,26 +21,26 @@ override INC = $(OS_INC) -I.. -I$(TOP)/Common -I./Wrappers/$(OS)	\
 -I$(TOP)/Common/Rx -I$(TOP)/Common/EncoderDev				\
 -I$(TOP)/Common/EncoderDev/HAPIHost					\
 -I$(TOP)/Common/EncoderDev/HAPIHost/MChip                               \
-`pkg-config --cflags libusb-1.0`
+`pkg-config --cflags libusb-1.0,libavformat`
 
 override OBJS_WRAPPERS = log.o baseif.o registryif.o USBif.o I2Cif.o
-override OS_INC := `pkg-config --cflags libusb-1.0`
+override OS_INC := `pkg-config --cflags libusb-1.0,libavformat`
 
 # override CXXFLAGS := -g -c -Wall -std=c++11 ${CFLAGS}
 
 include ./hauppauge_hdpvr2/TestApp/build-ADV7842/Makefile
 
-REC_CXX = g++
-REC_CXXFLAGS := -g -c -Wall -std=c++11 -fdiagnostics-color -DBOOST_LOG_DYN_LINK ${CFLAGS}
+REC_CXX := /opt/centos/devtoolset-1.1/root/usr/bin/c++
+REC_CXXFLAGS := -g -c -Wall -std=c++11   -D_GLIBCXX_USE_NANOSLEEP -DBOOST_LOG_DYN_LINK ${CFLAGS}
 REC_LDFLAGS =
 
 #	        `pkg-config --libs libsystemd` \
 
-REC_LDFLAGS  += `pkg-config --libs libusb-1.0` \
+REC_LDFLAGS  += `pkg-config --libs libusb-1.0,libavformat` \
 	        -lpthread
 
-REC_SOURCES = Logger.cpp Common.cpp MythTV.cpp HauppaugeDev.cpp hauppauge2.cpp
-REC_HEADERS = Logger.h Common.h MythTV.h HauppaugeDev.h
+REC_SOURCES = Logger.cpp Common.cpp AVoutput.cpp HauppaugeDev.cpp hauppauge2.cpp
+REC_HEADERS = Logger.h Common.h AVoutput.h HauppaugeDev.h
 REC_OBJECTS = $(REC_SOURCES:.cpp=.o)
 
 CONF = etc/sample.conf
@@ -48,12 +48,12 @@ FIRMWARE = hauppauge_hdpvr2/Common/EncoderDev/HAPIHost/bin/llama_usb_vx_host_sla
 TRANSIENT = FX2Firmware.cpp mchip_binary.cpp
 REC_EXE  = hauppauge2
 REC_LIBS = libADV7842.a
-REC_LIBS += -lboost_program_options -lboost_log -lboost_log_setup -lboost_system -lboost_thread -lboost_filesystem
+REC_LIBS += -lboost_program_options  -lboost_system -lboost_filesystem
 
 all: ${REC_EXE}
 
 ${REC_EXE}: ${REC_OBJECTS} ${REC_LIBS}
-	${REC_CXX} ${REC_OBJECTS} -o $@ ${REC_LIBS} ${REC_LDFLAGS}
+	${REC_CXX} ${REC_OBJECTS} -o $@ ${REC_LIBS} ${REC_LDFLAGS} 
 
 ${REC_OBJECTS}: ${REC_SOURCES}
 

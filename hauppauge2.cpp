@@ -27,7 +27,7 @@
 #include "Logger.h"
 #include "Common.h"
 #include "HauppaugeDev.h"
-#include "MythTV.h"
+#include "AVoutput.h"
 
 #include <iostream>
 #include <fstream>
@@ -46,14 +46,14 @@ void InitInterruptHandler(void)
 {
     sigset_t ss;
     sigemptyset(&ss);
-    sigaddset(&ss, SIGINT);
+    sigaddset(&ss, SIGTERM);
     pthread_sigmask(SIG_BLOCK, &ss, NULL);
 }
 
 static int evtWait() {
         sigset_t ss;
         sigemptyset(&ss);
-        sigaddset(&ss, SIGINT);
+        sigaddset(&ss, SIGTERM);
         int s;
         if(sigwait(&ss, &s) != 0) return 0;
         return s;
@@ -186,8 +186,6 @@ int main(int argc, char *argv[])
         ("aspect", po::value<float>()->default_value(1.0), "Aspect ratio")
         ("serial,s", po::value<string>(), "Serial number of device.")
         ("output,o", po::value<string>(), "Output destination")
-        ("mythtv", po::value<bool>()->implicit_value(true),
-         "Operate in MythTV External Recorder mode")
 
         // Logging
         ("logpath", po::value<string>(),
@@ -348,41 +346,15 @@ int main(int argc, char *argv[])
     if (vm.count("aspect"))
         params.aspectRatio = vm["aspect"].as<float>();
 
-    params.mythtv = (vm.count("mythtv"));
-
-    if (vm.count("output") || params.mythtv)
+    if (vm.count("output"))
     {
-        if (params.mythtv)
-        {
-            MythTV mythtv(params);
-            mythtv.Wait();
-        }
-        else
-        {
-            params.output = vm["output"].as<string>();
-
-            HauppaugeDev dev(params);
-            if (!dev)
-                return -2;
-
-            USBWrapper_t usbio;
-            if (!usbio.Open(params.serial))
-                return -3;
-
-            if (!dev.Open(usbio))
-            {
-                usbio.Close();
-                return -4;
-            }
-
-            if (dev.StartEncoding())
-            {
-                evtWait();
-                dev.StopEncoding();
-            }
-
-            dev.Close();
-        }
+       params.avoutput = vm["output"].as<string>();
+       AVoutput avoutput(params);
+       if (avoutput.StartEncoding())
+       {
+           evtWait();
+       }
+       avoutput.Terminate();
     }
 
     LOG(Logger::CRIT) << "Done." << flush;
