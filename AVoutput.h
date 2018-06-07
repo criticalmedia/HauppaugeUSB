@@ -53,6 +53,7 @@ class AVoutput
     void Fill(void * data, size_t len);
     void SetBlockSize(uint32_t sz) { m_block_size = sz; }
     DataTransfer::callback_t & getWriteCallBack(void) { return m_cb; }
+    USBWrapper_t::callback_t & getErrorCallBack(void) { return m_error_cb; }
   protected:
 
     const Parameters   &m_params;
@@ -60,6 +61,7 @@ class AVoutput
     USBWrapper_t        m_usbio;
     
     DataTransfer::callback_t m_cb;
+    USBWrapper_t::callback_t m_error_cb;
     uint32_t m_block_size;
 
     std::atomic<bool> m_run;

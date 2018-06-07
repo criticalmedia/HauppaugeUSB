@@ -33,6 +33,7 @@ AVoutput::AVoutput(const Parameters & params)
     : m_params(params),
       m_dev(nullptr),
       m_cb(std::bind(&AVoutput::Fill, this, std::placeholders::_1, std::placeholders::_2)),
+      m_error_cb(std::bind(&AVoutput::CloseAVOutput, this)),
       m_run(true),
       m_fatal(false),
       m_streaming(false),
@@ -77,7 +78,7 @@ void AVoutput::OpenDev(void)
         return;
     }
 
-    if (!m_usbio.Open(m_params.serial))
+    if (!m_usbio.Open(m_params.serial, &getErrorCallBack()))
     {
         delete m_dev;
         m_dev = nullptr;
