@@ -19,6 +19,7 @@
  */
 
 #include "AVoutput.h"
+#include <csignal>
 #include <unistd.h>
 
 extern "C" {
@@ -33,13 +34,13 @@ AVoutput::AVoutput(const Parameters & params)
     : m_params(params),
       m_dev(nullptr),
       m_cb(std::bind(&AVoutput::Fill, this, std::placeholders::_1, std::placeholders::_2)),
-      m_error_cb(std::bind(&AVoutput::CloseAVOutput, this)),
+      m_error_cb(std::bind(&AVoutput::USBError, this)),
       m_run(true),
       m_fatal(false),
       m_streaming(false),
       m_ready(false)
 {
-    this->OpenDev();
+    OpenDev();
     Logger::setThreadName("Buffer");
 }
 
@@ -154,6 +155,15 @@ bool AVoutput::CloseAVOutput(void)
     return true;
 }
 
+void AVoutput::USBError(void)
+{
+    LOG(Logger::CRIT) << "Detected Error with USB. Exiting NOW!!!" << flush;
+    m_usbio.Close();
+    CloseAVOutput();
+    exit(1);
+    return;
+}
+
 bool AVoutput::StopEncoding(bool soft)
 {
     if (!m_streaming)
@@ -171,12 +181,13 @@ bool AVoutput::StopEncoding(bool soft)
     if (!m_dev)
     {
         LOG(Logger::CRIT) << "Invalid Hauppauge device." << flush;
+        CloseAVOutput();
         return false;
     }
 
     if (m_dev->StopEncoding())
     {
-        this->CloseAVOutput();
+        CloseAVOutput();
         m_streaming = false;
         return true;
     }

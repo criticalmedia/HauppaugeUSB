@@ -48,6 +48,7 @@ class AVoutput
     bool StartEncoding(void);
     bool OpenAVOutput(void);
     bool CloseAVOutput(void);
+    void USBError(void);
     bool StopEncoding(bool soft = false);
 
     void Fill(void * data, size_t len);
