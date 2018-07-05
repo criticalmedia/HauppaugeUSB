@@ -161,7 +161,6 @@ void AVoutput::USBError(void)
     m_usbio.Close();
     CloseAVOutput();
     exit(1);
-    return;
 }
 
 bool AVoutput::StopEncoding(bool soft)

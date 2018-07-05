@@ -32,6 +32,8 @@
 #include <stdarg.h>
 #include <string>
 
+using namespace std;
+
 class Logger : public std::ostream
 {
     class LogStreamBuf: public std::stringbuf
@@ -44,7 +46,6 @@ class Logger : public std::ostream
         {
             m_parent->Log(str());
             str("");
-            m_parent->Unlock();
             return 0;
         }
 
@@ -98,15 +99,8 @@ class Logger : public std::ostream
             = std::chrono::system_clock::now();
         std::chrono::duration<int64_t, std::nano> offset
             = std::chrono::steady_clock::now() - m_log_start;
-
-        m_mutex.lock();
         Output(now, offset, m_loc_file, m_loc_function,
                m_loc_line, m_level, msg, false);
-    }
-
-    void Unlock(void)
-    {
-        m_mutex.unlock(); // Lock held in Log(const std::string& msg)
     }
 
   private:
