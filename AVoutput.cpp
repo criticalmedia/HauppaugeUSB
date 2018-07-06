@@ -41,7 +41,7 @@ AVoutput::AVoutput(const Parameters & params)
       m_ready(false)
 {
     OpenDev();
-    Logger::setThreadName("Buffer");
+    Logger::setThreadName("hauppauge2");
 }
 
 AVoutput::~AVoutput(void)
