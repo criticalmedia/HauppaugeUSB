@@ -3,6 +3,9 @@
 
 override TOP := ./hauppauge_hdpvr2
 
+BOOSTLIBDIR := /usr/lib64/boost148
+BOOSTINCDIR := /usr/include/boost148
+
 override VPATH = ${TOP} $(TOP)/Common/Rx $(TOP)/Common/Rx/ADV7842	\
 $(TOP)/Common/Rx/ADV7842/RX/LIB $(TOP)/Common/Rx/ADV7842/RX/HAL	\
 $(TOP)/Common/Rx/ADV7842/RX/HAL/4G				\
@@ -21,6 +24,7 @@ override INC = $(OS_INC) -I.. -I$(TOP)/Common -I./Wrappers/$(OS)	\
 -I$(TOP)/Common/Rx -I$(TOP)/Common/EncoderDev				\
 -I$(TOP)/Common/EncoderDev/HAPIHost					\
 -I$(TOP)/Common/EncoderDev/HAPIHost/MChip                               \
+-I$(BOOSTINCDIR) \
 `pkg-config --cflags libusb-1.0,libavformat`
 
 override OBJS_WRAPPERS = log.o baseif.o registryif.o USBif.o I2Cif.o
@@ -30,7 +34,7 @@ override OS_INC := `pkg-config --cflags libusb-1.0,libavformat`
 
 include ./hauppauge_hdpvr2/TestApp/build-ADV7842/Makefile
 
-REC_CXX := /opt/centos/devtoolset-1.1/root/usr/bin/c++
+REC_CXX := c++
 REC_CXXFLAGS := -g -c -Wall -std=c++11   -D_GLIBCXX_USE_NANOSLEEP -DBOOST_LOG_DYN_LINK ${CFLAGS}
 REC_LDFLAGS =
 
@@ -48,11 +52,11 @@ FIRMWARE = hauppauge_hdpvr2/Common/EncoderDev/HAPIHost/bin/llama_usb_vx_host_sla
 TRANSIENT = FX2Firmware.cpp mchip_binary.cpp
 REC_EXE  = hauppauge2
 REC_LIBS = libADV7842.a
-REC_LIBS += -lboost_program_options  -lboost_system -lboost_filesystem
+REC_LIBS += -L$(BOOSTLIBDIR) -lboost_program_options -lboost_system -lboost_filesystem
 
 all: ${REC_EXE}
 
-${REC_EXE}: ${REC_OBJECTS} ${REC_LIBS}
+${REC_EXE}: ${REC_OBJECTS}
 	${REC_CXX} ${REC_OBJECTS} -o $@ ${REC_LIBS} ${REC_LDFLAGS} 
 
 ${REC_OBJECTS}: ${REC_SOURCES}
