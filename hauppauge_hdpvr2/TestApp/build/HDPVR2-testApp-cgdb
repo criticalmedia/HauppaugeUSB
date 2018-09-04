@@ -1,0 +1,26 @@
+#!/bin/sh
+
+MYPATH=$(dirname $0)
+TESTAPP=$MYPATH/HDPVR2-testApp
+CGDB=$(which cgdb 2>/dev/null)
+
+if [ -z "$CGDB" ]
+then
+    echo "CGDB was not found on this system"
+    echo "Please install it by running 'apt-get install cgdb'"
+    echo "and try again."
+
+    echo 0
+fi
+
+if [ ! -x $TESTAPP ]
+then
+    echo "HDPVR2-testApp was not found in current directory"
+    echo "Please invoke 'make' inside 'build' directory to build this app"
+    echo "and run this script again to start debugging."
+
+    exit 0
+fi
+
+$CGDB -- --args $TESTAPP $*
+

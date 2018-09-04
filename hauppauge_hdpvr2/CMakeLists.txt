@@ -1,0 +1,125 @@
+cmake_minimum_required(VERSION 2.8)
+project(dummy_project)
+include_directories(3rd-party/libusb-1.0.18-root-x86_64/include/libusb-1.0)
+include_directories(3rd-party/libusb-1.0.18/Xcode)
+include_directories(3rd-party/libusb-1.0.18/android)
+include_directories(3rd-party/libusb-1.0.18/examples)
+include_directories(3rd-party/libusb-1.0.18/examples/getopt)
+include_directories(3rd-party/libusb-1.0.18/libusb)
+include_directories(3rd-party/libusb-1.0.18/libusb/os)
+include_directories(3rd-party/libusb-1.0.18/msvc)
+include_directories(3rd-party/libusb-1.0.18/tests)
+include_directories(3rd-party/libusb-root-x86_64/include/libusb-1.0)
+include_directories(Common)
+include_directories(Common/EncoderDev)
+include_directories(Common/EncoderDev/HAPIHost)
+include_directories(Common/EncoderDev/HAPIHost/MChip)
+include_directories(Common/FX2API)
+include_directories(Common/Rx)
+include_directories(Common/Rx/ADV7842)
+include_directories(Common/Rx/ADV7842/RX)
+include_directories(Common/Rx/ADV7842/RX/HAL)
+include_directories(Common/Rx/ADV7842/RX/HAL/4G)
+include_directories(Common/Rx/ADV7842/RX/HAL/4G/ADV7842/HAL)
+include_directories(Common/Rx/ADV7842/RX/HAL/4G/ADV7842/MACROS)
+include_directories(Common/Rx/ADV7842/RX/LIB)
+include_directories(Common/Wrappers/darwin)
+include_directories(Common/Wrappers/linux)
+include_directories(Common/colossus)
+add_executable(dummy_executable
+  3rd-party/libusb-1.0.18/examples/dpfp.c
+  3rd-party/libusb-1.0.18/examples/dpfp_threaded.c
+  3rd-party/libusb-1.0.18/examples/ezusb.c
+  3rd-party/libusb-1.0.18/examples/fxload.c
+  3rd-party/libusb-1.0.18/examples/getopt/getopt.c
+  3rd-party/libusb-1.0.18/examples/getopt/getopt1.c
+  3rd-party/libusb-1.0.18/examples/hotplugtest.c
+  3rd-party/libusb-1.0.18/examples/listdevs.c
+  3rd-party/libusb-1.0.18/examples/sam3u_benchmark.c
+  3rd-party/libusb-1.0.18/examples/xusb.c
+  3rd-party/libusb-1.0.18/libusb/core.c
+  3rd-party/libusb-1.0.18/libusb/descriptor.c
+  3rd-party/libusb-1.0.18/libusb/hotplug.c
+  3rd-party/libusb-1.0.18/libusb/io.c
+  3rd-party/libusb-1.0.18/libusb/os/darwin_usb.c
+  3rd-party/libusb-1.0.18/libusb/os/linux_netlink.c
+  3rd-party/libusb-1.0.18/libusb/os/linux_udev.c
+  3rd-party/libusb-1.0.18/libusb/os/linux_usbfs.c
+  3rd-party/libusb-1.0.18/libusb/os/netbsd_usb.c
+  3rd-party/libusb-1.0.18/libusb/os/openbsd_usb.c
+  3rd-party/libusb-1.0.18/libusb/os/poll_posix.c
+  3rd-party/libusb-1.0.18/libusb/os/poll_windows.c
+  3rd-party/libusb-1.0.18/libusb/os/threads_posix.c
+  3rd-party/libusb-1.0.18/libusb/os/threads_windows.c
+  3rd-party/libusb-1.0.18/libusb/os/wince_usb.c
+  3rd-party/libusb-1.0.18/libusb/os/windows_usb.c
+  3rd-party/libusb-1.0.18/libusb/strerror.c
+  3rd-party/libusb-1.0.18/libusb/sync.c
+  3rd-party/libusb-1.0.18/msvc/missing.c
+  3rd-party/libusb-1.0.18/tests/stress.c
+  3rd-party/libusb-1.0.18/tests/testlib.c
+  Common/EncoderDev/HAPIHost/CHapi.cpp
+  Common/EncoderDev/HAPIHost/Hapi.cpp
+  Common/EncoderDev/HAPIHost/HwapiUsb.cpp
+  Common/EncoderDev/HAPIHost/MChip/mchip.cpp
+  Common/EncoderDev/HAPIHost/MChip/mchip_base.cpp
+  Common/EncoderDev/HAPIHost/MChip/mchip_binary.cpp
+  Common/EncoderDev/HAPIHost/MChip/mchip_dram_bkv.cpp
+  Common/EncoderDev/HAPIHost/MChip/mchip_gpio.cpp
+  Common/EncoderDev/HAPIHost/MChip/mchip_host_rw.cpp
+  Common/EncoderDev/HAPIHost/MChip/mchip_led.cpp
+  Common/EncoderDev/HAPIHost/MChip/mchip_memtomem.cpp
+  Common/EncoderDev/HAPIHost/MChip/mchip_port_a.cpp
+  Common/EncoderDev/HAPIHost/MChip/mchip_sbp_rw.cpp
+  Common/EncoderDev/HAPIHost/MChip/mchip_test_gpio.cpp
+  Common/EncoderDev/HAPIHost/MChip/mchip_test_host.cpp
+  Common/EncoderDev/HAPIHost/MChip/mchip_test_led.cpp
+  Common/EncoderDev/HAPIHost/Queue.cpp
+  Common/EncoderDev/HAPIHost/SwapEndian.cpp
+  Common/EncoderDev/HAPIHost/bkv_init.cpp
+  Common/EncoderDev/HAPIHost/mchip_utils.cpp
+  Common/EncoderDev/encoderDev_DXT.cpp
+  Common/FX2API/FX2Device.cpp
+  Common/Rx/ADV7842/RX/HAL/4G/ADV7842/HAL/7842_hal.c
+  Common/Rx/ADV7842/RX/HAL/4G/ADV7842/HAL/7844_hal.c
+  Common/Rx/ADV7842/RX/HAL/4G/ADV7842/HAL/7844_ini_hal.c
+  Common/Rx/ADV7842/RX/HAL/4G/rx_4g_hal.c
+  Common/Rx/ADV7842/RX/HAL/4G/rx_4g_hdmi_hal.c
+  Common/Rx/ADV7842/RX/HAL/rx_afe_hal.c
+  Common/Rx/ADV7842/RX/HAL/rx_cp_hal.c
+  Common/Rx/ADV7842/RX/HAL/rx_hal.c
+  Common/Rx/ADV7842/RX/HAL/rx_hdmi_hal.c
+  Common/Rx/ADV7842/RX/HAL/rx_sdp_hal.c
+  Common/Rx/ADV7842/RX/HAL/rx_sdp_vdp_hal.c
+  Common/Rx/ADV7842/RX/HAL/rx_vdp_hal.c
+  Common/Rx/ADV7842/RX/LIB/rx_afe.c
+  Common/Rx/ADV7842/RX/LIB/rx_cdec.c
+  Common/Rx/ADV7842/RX/LIB/rx_cec.c
+  Common/Rx/ADV7842/RX/LIB/rx_cp.c
+  Common/Rx/ADV7842/RX/LIB/rx_dpp_csc.c
+  Common/Rx/ADV7842/RX/LIB/rx_gen.c
+  Common/Rx/ADV7842/RX/LIB/rx_hdmi.c
+  Common/Rx/ADV7842/RX/LIB/rx_isr.c
+  Common/Rx/ADV7842/RX/LIB/rx_multi.c
+  Common/Rx/ADV7842/RX/LIB/rx_sdp.c
+  Common/Rx/ADV7842/RX/LIB/rx_vdp.c
+  Common/Rx/ADV7842/Wrapper.c
+  Common/Rx/ADV7842/Wrapper.orig.c
+  Common/Rx/ADV7842/main.c
+  Common/Rx/receiver_ADV7842.cpp
+  Common/Rx/audio_CX2081x.h
+  Common/Wrappers/darwin/I2Cif.cpp
+  Common/Wrappers/darwin/USBif.cpp
+  Common/Wrappers/darwin/USBif_el.cpp
+  Common/Wrappers/darwin/baseif.cpp
+  Common/Wrappers/darwin/log.cpp
+  Common/Wrappers/darwin/registryif.cpp
+  Common/Wrappers/linux/I2Cif.cpp
+  Common/Wrappers/linux/USBif.cpp
+  Common/Wrappers/linux/baseif.cpp
+  Common/Wrappers/linux/log.cpp
+  Common/Wrappers/linux/registryif.cpp
+  Common/device.cpp
+  TestApp/build-ADV7842/FX2Firmware.cpp
+  TestApp/main.cpp
+)

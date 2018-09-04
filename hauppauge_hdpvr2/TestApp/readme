@@ -1,0 +1,23 @@
+Test application command line usage:
+
+Usage: ./HDPVR2-testApp [-hcspb] [-a <aspect_ratio>] -f <output_file>
+
+ Arguments:
+   -h - this help
+  Mode:
+   default: HDMI
+   -c - component
+   -s - composite
+  Output:
+   default: stdout
+   -f <output_file> - file
+   -p - use named pipe instead
+   only MPEG-2 transport stream is available now
+  Other options:
+   -a <aspect_ratio> - enforce aspect ratio
+     examples: '-a 1.33' or '-a 4/3'
+   -b - increase audio input gain
+
+ Note:
+Capture should be stopped by sending SIGINT (Ctrl-C from terminal).
+
