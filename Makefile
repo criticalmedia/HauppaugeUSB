@@ -67,14 +67,13 @@ ${REC_OBJECTS}: ${REC_SOURCES}
 #.c.o:
 #	${REC_CXX} ${REC_CXXFLAGS} $< -o $@
 
-install: ${REC_EXE}
-	ln -snf ${TOP}/Common/*.cfg .
-	ln -snf $(TOP)/Common/EncoderDev/HAPIHost/bin/*.bin .
-
 clean:
 	$(RM) *.o *.a ${REC_EXE} ${TRANSIENT}
 
 install:
-	install -D --target-directory /usr/sbin ${REC_EXE}
-	install -D --target-directory /lib/firmware/Hauppauge ${FIRMWARE}
-	install -D --target-directory /etc/Hauppauge ${CONF}
+	mkdir -p $(DESTDIR)/usr/sbin
+	mkdir -p $(DESTDIR)/lib/firmware/Hauppauge
+	mkdir -p $(DESTDIR)/etc/Hauppauge
+	install -m0755 $(REC_EXE) $(DESTDIR)/usr/sbin
+	install -m0644 $(FIRMWARE) $(DESTDIR)/lib/firmware/Hauppauge
+	install -m0644 $(CONF) $(DESTDIR)/etc/Hauppauge
