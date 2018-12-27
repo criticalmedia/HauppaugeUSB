@@ -43,8 +43,8 @@ REC_LDFLAGS =
 REC_LDFLAGS  += `pkg-config --libs libusb-1.0,libavformat` \
 	        -lpthread
 
-REC_SOURCES = Logger.cpp Common.cpp AVoutput.cpp HauppaugeDev.cpp hauppauge2.cpp
-REC_HEADERS = Logger.h Common.h AVoutput.h HauppaugeDev.h
+REC_SOURCES = Logger.cpp Common.cpp AVoutput.cpp FlipInterlacedFields.cpp HauppaugeDev.cpp hauppauge2.cpp
+REC_HEADERS = Logger.h Common.h AVoutput.h FlipInterlacedFields.h HauppaugeDev.h
 REC_OBJECTS = $(REC_SOURCES:.cpp=.o)
 
 CONF = etc/sample.conf

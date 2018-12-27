@@ -29,8 +29,11 @@
 #include "HauppaugeDev.h"
 #include "AVoutput.h"
 
+#include <chrono>
 #include <iostream>
 #include <fstream>
+#include <iomanip>
+#include <thread>
 
 #include <unistd.h>
 #include <signal.h>
@@ -40,6 +43,7 @@
 
 #include "types_local.h"
 
+using namespace std;
 namespace po = boost::program_options;
 
 void InitInterruptHandler(void)
@@ -121,6 +125,38 @@ bool FindDev(const string & serial, int & bus, int & port)
     return false;
 }
 
+void PrintPosition(const chrono::seconds & elapsed,
+                   const chrono::seconds & duration)
+{
+    auto t = elapsed;
+    auto h =  chrono::duration_cast<std::chrono::hours>(t);
+    t -= h;
+    auto m =  chrono::duration_cast<std::chrono::minutes>(t);
+    t -= m;
+    auto s =  chrono::duration_cast<std::chrono::seconds>(t);
+#if 0
+    t -= s;
+    auto ms = chrono::duration_cast<std::chrono::milliseconds>(t); t -= ms;
+    auto us = chrono::duration_cast<std::chrono::microseconds>(t); t -= us;
+    auto ns = chrono::duration_cast<std::chrono::nanoseconds>(t);
+#endif
+    cerr.fill('0');
+    cerr << setw(3) << h.count() << ":" << setw(2) << m.count() << ":"
+         << setw(2) << s.count();
+    cerr << " of ";
+
+    t = duration;
+    h =  chrono::duration_cast<std::chrono::hours>(t);
+    t -= h;
+    m =  chrono::duration_cast<std::chrono::minutes>(t);
+    t -= m;
+    s =  chrono::duration_cast<std::chrono::seconds>(t);
+
+    cerr << setw(3) << h.count() << ":" << setw(2) << m.count() << ":"
+         << setw(2) << s.count();
+    cerr << "\r";
+}
+
 int main(int argc, char *argv[])
 {
     Parameters params;
@@ -186,6 +222,8 @@ int main(int argc, char *argv[])
         ("aspect", po::value<float>()->default_value(1.0), "Aspect ratio")
         ("serial,s", po::value<string>(), "Serial number of device.")
         ("output,o", po::value<string>(), "Output destination")
+        ("duration", po::value<int>()->default_value(0),
+         "Stop recording after duration")
 
         // Logging
         ("logpath", po::value<string>(),
@@ -206,7 +244,9 @@ int main(int argc, char *argv[])
         ("override-loglevel", po::value<string>()->default_value("notice"),
          "Overrides the command-line logging level.  All log messages at lower "
          "levels will be discarded. In descending order: emerg, alert, crit, "
-         "err, warning, notice, info, debug");
+         "err, warning, notice, info, debug")
+        ("description", po::value<string>(),
+         "Set the description used in the MythTV log files.");
 
     Logger::setThreadName("main");
 
@@ -274,6 +314,7 @@ int main(int argc, char *argv[])
         Logger::Get()->setFilter(vm["override-loglevel"].as<string>());
     else if (vm.count("loglevel"))
         Logger::Get()->setFilter(vm["loglevel"].as<string>());
+
 
     if (vm.count("logpath") && vm.count("quiet") < 2)
     {
@@ -348,13 +389,36 @@ int main(int argc, char *argv[])
 
     if (vm.count("output"))
     {
-       params.avoutput = vm["output"].as<string>();
-       AVoutput avoutput(params);
-       if (avoutput.StartEncoding())
-       {
-           evtWait();
-       }
-       avoutput.Terminate();
+        params.avoutput = vm["output"].as<string>();
+        AVoutput avoutput(params);
+        if (vm.count("duration") && vm["duration"].as<int>() > 0)
+        {
+            if (avoutput.StartEncoding())
+            {
+                chrono::steady_clock::time_point start =
+                    chrono::steady_clock::now();
+                std::chrono::seconds elapsed = chrono::seconds(0);
+                std::chrono::seconds duration =
+                    chrono::seconds(vm["duration"].as<int>());
+                do
+                {
+                    elapsed = chrono::duration_cast<chrono::seconds>
+                               (chrono::steady_clock::now() - start);
+                    PrintPosition(elapsed, duration);
+                    std::this_thread::sleep_for(std::chrono::seconds(1));
+                }
+                while (elapsed.count() < duration.count());
+                cerr << "\n\n";
+            }
+        }
+        else
+        {
+            if (avoutput.StartEncoding())
+            {
+                evtWait();
+            }
+        }
+        avoutput.Terminate();
     }
 
     LOG(Logger::CRIT) << "Done." << flush;

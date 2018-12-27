@@ -9,6 +9,12 @@ being said, It is working for me.
 This can be used at the command-line as well as an "External Recorder" for MythTV.
 
 ----
+## News
+The issue with interlaced fields being in the wrong order has been fixed.
+
+AC3 audio codec now works via HDMI.
+
+----
 ## Installing
 
 ### Install dependancies
@@ -19,13 +25,7 @@ sudo dnf install make gcc gcc-c++ kernel-devel libstdc++-devel boost-devel libus
 
 #### Ubuntu
 ```
-sudo apt-get install libboost-log-dev libboost-programs-options-dev libusb-1.0-0-dev build-essential
-```
-
-#### This version is not inteded for use with MythTV, but rather the SnapTV plugin system, where this stream is sent into a pipe (fifo)
-### Grab the prepared "driver" from Hauppauge into the submodule hauppauge_hdpvr2
-```
-git submodule update --init
+sudo apt-get install libboost-log-dev libboost-program-options-dev libusb-1.0-0-dev build-essential
 ```
 
 ### Build it
@@ -241,3 +241,5 @@ After that, the Colossus2 seems to work reliably until the next reboot.
 A user on the MythTV forum has posted a detailed review of possible issues:
 
 https://forum.mythtv.org/viewtopic.php?f=2&t=2417&sid=91dea4e835b50e7564e37eda049773dd
+
+At least some of these issues are dependent on the STB used.
